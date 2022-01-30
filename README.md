@@ -7,6 +7,7 @@ Vzorčni repozitorij za projekt pri predmetu APPR v študijskem letu 2021/22.
 V analizi si bom ogledal zadnje 3 sezone v 5 najmočnjejših evropskih nogometnih ligah. Pri tem se bom osredotočil enkrat na sezono ter primerjal med sabo dogajanje po ligah, drugič pa na ligo in pregledal vse tri sezone. Določil bom v kateri ligi se igra najbolj napadalno in v kateri najbolj defenzivno. Podrobneje si bom ogledal rezultate derbijev v vsaki ligi, (top 6 ekip). Zanima me tudi, če bo opazna sprememba zaradi korona premora ter igranja pred praznimi tribuami. 
 
 
+
 Podatki za lige bodo v tabelah:
 - kolo
 - dan
