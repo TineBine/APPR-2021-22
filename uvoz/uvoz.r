@@ -90,23 +90,29 @@ ang_ekipe <- unique(tabela_ang$domaca_ekipa)
 
 
 #----------------------------------------------------------------------------
-#Uvoz tabele iz wikipedije angleških stadionov
+#Uvoz tabele angleških stadionov iz wikipedije 
 
 
 uvozi.stadione <- function() {
   link <- "https://en.wikipedia.org/wiki/List_of_football_stadiums_in_England"
   stran <- html_session(link) %>% read_html()
   tabela <- html_node(stran, ".wikitable")
-  tabela <- html_table(tabela, fill= TRUE)
+  tabela <- html_table(tabela, fill= TRUE) 
   tabela = tabela[2:5]
   colnames(tabela) <- c("Stadion", "Mesto", "Kapaciteta", "Ekipa")
   tabela = subset(tabela, (Ekipa %in% ang_ekipe))
-
+  for(i in 1:7){
+    tabela$Kapaciteta[i] <- substr(tabela$Kapaciteta[i], 1, nchar(tabela$Kapaciteta[i])-3)
+  }
+  for(i in 8:24){
+    tabela$Kapaciteta[i] <- substr(tabela$Kapaciteta[i], 1, nchar(tabela$Kapaciteta[i])-4)
+  }
+  tabela$Kapaciteta[19] = '26,125'
   return(tabela)
 }
 
 
-
-
-
 stadioni <- uvozi.stadione()
+
+stadioni$Kapaciteta = as.numeric(gsub(",", "", stadioni$Kapaciteta))
+
