@@ -7,7 +7,7 @@
 # Začetni podatki
 podatki <- read_csv('podatki/tekme.csv', locale=locale(encoding='UTF-8'))
 
-tabela_tekem1 <- podatki[-c(2,3,4)]
+tabela_tekem <- podatki[-c(2,3,4)]
 
 slovar <- c("France" = "Francija",
             "Germany" = "Nemčija",
@@ -17,7 +17,7 @@ slovar <- c("France" = "Francija",
 
 
 
-tabela_tekem <- tabela_tekem1 %>% mutate(drzava=slovar[drzava])
+tabela_tekem <- tabela_tekem %>% mutate(drzava=slovar[drzava])
 
 #Dodani podatki o osvojenih točkah
 tabela_tekem <- tabela_tekem %>% add_column(osvojene_tocke_domaci = 1,
