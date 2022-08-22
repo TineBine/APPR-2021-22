@@ -8,6 +8,8 @@ library(readr)
 library(dplyr)
 library(tibble)
 library(stringr)
+library(scales)
+library(ggrepel)
 
 options(gsubfn.engine="R")
 

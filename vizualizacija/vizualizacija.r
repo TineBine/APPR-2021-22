@@ -134,17 +134,41 @@ ang_tekme$Razmerje_tock <- as.numeric(paste(ang_tekme$Tocke_doma /(ang_tekme$Toc
 #ang_tekme1 <- ang_tekme[order(ang_tekme$Razmerje_tock, decreasing = TRUE), ]
 
 
-graf6 <- ggplot(ang_tekme, aes(x=reorder(Ekipa, Razmerje_tock), y=Razmerje_tock)) + 
-  geom_col(orientation = "x")  + scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
-  coord_cartesian(ylim = c(0.4, 0.8)) + coord_flip() +
-  xlab("Ekipa") + ylab("Tocke")
+graf6 <- ggplot(ang_tekme, aes(x=Tocke_doma, y=Tocke_v_gosteh, label = Ekipa)) + 
+  geom_point(color = dplyr::case_when(ang_tekme$Tocke_doma > 100 ~ "green2",
+                                      ang_tekme$Tocke_doma < 25 ~ "red",
+                                      ang_tekme$Tocke_doma + ang_tekme$Tocke_v_gosteh < 100 ~ "orange",
+                                      TRUE ~ "yellow2"), size = 2) +
+  xlab("Točke doma") + ylab("Točke v gosteh") + 
+  geom_label_repel(aes(label=Ekipa,),
+                   size = 2.5,
+                   box.padding = 0.25,
+                   point.padding = 0.35) 
+
+
 
 
 print(graf6)
 #--------------------------------------------------------------------------------------
 #7. GRAF - Osvojene točke doma glede na kapaciteto stadiona (Ekipe v PL)
+tocke_kapaciteta <- merge(ang_tekme, stadioni, by = 'Ekipa')
+
+graf7 <- ggplot(tocke_kapaciteta, aes(x=Kapaciteta, y=Tocke_doma, label = Stadion)) + 
+  geom_point(color = dplyr::case_when(ang_tekme$Tocke_doma > 100 ~ "green2",
+                                      ang_tekme$Tocke_doma < 25 ~ "red",
+                                      ang_tekme$Tocke_doma + ang_tekme$Tocke_v_gosteh < 100 ~ "orange",
+                                      TRUE ~ "yellow2"), size = 2) +
+  geom_smooth(method = lm, se = FALSE) +
+  xlab("Kapaciteta") + ylab("Točke doma") + 
+  geom_label_repel(aes(label=Stadion,),
+                   size = 2.5,
+                   box.padding = 0.25,
+                   point.padding = 0.35) 
 
 
+
+
+print(graf7)
 
 
 #--------------------------------------------------------------------------------------

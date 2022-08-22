@@ -78,7 +78,7 @@ imena_ekip <- c( "Spurs" = "Tottenham Hotspur",
                  "Fulham" = "Fulham",
                  "Watford" = "Watford",
                  "Burnley" = "Burnley",
-                 "Cardiff" = "Cardiff")
+                 "Cardiff" = "Cardiff City")
 
 
 tabela_ang <- tabela_ang %>% mutate(domaca_ekipa=imena_ekip[domaca_ekipa])
@@ -115,4 +115,7 @@ uvozi.stadione <- function() {
 stadioni <- uvozi.stadione()
 
 stadioni$Kapaciteta = as.numeric(gsub(",", "", stadioni$Kapaciteta))
+
+#Treba dodat Cardiff
+stadioni <- stadioni %>% add_row(Stadion = "Cardiff City Stadium", Mesto = "Cardiff", Kapaciteta = 33280, Ekipa = "Cardiff City", .before = 12)
 
