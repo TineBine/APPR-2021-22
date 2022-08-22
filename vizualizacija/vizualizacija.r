@@ -173,11 +173,32 @@ print(graf7)
 
 #--------------------------------------------------------------------------------------
 #8. GRAF - izidi na tekmah TOP 6 ekip
+razpleti_tekem_top6a <- po_5_tekmah %>%
+  select(drzava, lestvica_domaci, lestvica_gostje, osvojene_tocke_domaci, osvojene_tocke_gostje) %>%
+  mutate(top_ekipe = ((lestvica_domaci < 7) & (lestvica_gostje < 7)), 
+         zmaga_domacih = osvojene_tocke_domaci > osvojene_tocke_gostje,
+         zmaga_gostov = osvojene_tocke_domaci < osvojene_tocke_gostje,
+         remi = osvojene_tocke_domaci == osvojene_tocke_gostje
+         ) %>%
+  group_by(drzava)
+
+razpleti_tekem_top6 <- razpleti_tekem_top6a[razpleti_tekem_top6a$top_ekipe == TRUE, ]
+
+tekme_top6 <- razpleti_tekem_top6 %>% select_all() %>% group_by(drzava) %>%
+  summarise(zmage_domacih = count(zmaga_domacih, top_ekipe),
+            zmage_gostov = count(zmaga_gostov),
+            remiji = count(remi))
+
+za_graf <- tekme_top6 %>% gather(key = Rezultat, value = Value, zmage_domacih:remiji)
+tekme_urejeno <- za_graf[order(za_graf$drzava), ]
+
+
+graf8 <- ggplot(tekme_urejeno, aes(drzava, Value, fill = Rezultat)) + geom_col(position = "dodge") +
+  labs(x = "Država", y = "Število rezultatov", title = "Rezultati med TOP 6 ekipami glede na ligo")
 
 
 
-
-
+print(graf8)
 #======================================================================================
 #ZEMLJEVIDI
 
