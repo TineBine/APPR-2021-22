@@ -24,7 +24,7 @@ povprecje_golov_lige <- tabela_tekem %>% select(drzava, zadetki_domaci, zadetki_
 
 graf1 <- ggplot(povprecje_golov_lige, aes(x=drzava, y=Povprecje, fill=Gostovanje)) + 
   geom_col() + 
-  xlab("Država") + ylab("Povprečje zadetkov") + ggtitle("Primerjava zadetkov domače in gostujoče ekipe glede na državo")
+  xlab("Država") + ylab("Povprečni goli na tekmo") + ggtitle("Primerjava golov domače in gostujoče ekipe glede na državo")
 
 
 print(graf1)
@@ -40,7 +40,7 @@ povprecje_golov_sezone <- tabela_tekem %>% select(zdruzeno, zadetki_domaci, zade
 
 graf2 <- ggplot(povprecje_golov_sezone, aes(x=zdruzeno, y=Povprecje, fill=Gostovanje)) + 
   geom_col() + 
-  xlab("Sezona") + ylab("Povprečje zadetkov") + ggtitle("Primerjava zadetkov domače in gostujoče ekipe glede na sezono") +
+  xlab("Sezona") + ylab("Povprečni goli na tekmo") + ggtitle("Primerjava golov domače in gostujoče ekipe glede na sezono") +
   theme(axis.text.x = element_text(size = rel(0.9)))
 
 
@@ -78,12 +78,7 @@ graf3 <- ggplot(zmage, aes(x=sezona, y=odstotek, fill=Zmagovalec)) +
 print(graf3)
 #--------------------------------------------------------------------------------------
 #4. GRAF - Na koliko tekmah je prišlo do presenečenja
-#presenecenje <- tabela_tekem %>% 
-#  select(zdruzeno, kolo, domaca_ekipa, lestvica_domaci, gostujoca_ekipa, lestvica_gostje, osvojene_tocke_domaci, osvojene_tocke_gostje)
- 
 po_5_tekmah <- tabela_tekem[tabela_tekem$kolo > 5, ]
-preimenovanje3 <- c("lestvica_domaci = Domači", "lestvica_gostje" = "Gosti")
-
 
 presenecenje <- po_5_tekmah %>%
   select(zdruzeno, lestvica_domaci, lestvica_gostje, osvojene_tocke_domaci, osvojene_tocke_gostje) %>%
@@ -92,54 +87,60 @@ presenecenje <- po_5_tekmah %>%
   group_by(zdruzeno) %>%
   summarise(presenetili_domaci = count(domaci),
             presenetili_gostje = count(gostje))
-  
-#presenetili_domaci <- count(presenecenje, (presenecenje$lestvica_domaci < presenecenje$lestvica_gostje) & (presenecenje$osvojene_tocke_domaci > presenecenje$osvojene_tocke_gostje))
-#presenetili_gostje <-  count(presenecenje, (presenecenje$lestvica_domaci > presenecenje$lestvica_gostje) & (presenecenje$osvojene_tocke_domaci < presenecenje$osvojene_tocke_gostje))
-
-  #gather(key=Zmagovalec, value="Tocke", -zdruzeno) %>%
-  #mutate(Zmagovalec=preimenovanje2[Zmagovalec]) %>%  
-  #group_by(zdruzeno, Zmagovalec) 
 
 
 graf4 <- ggplot(presenecenje, aes(x=zdruzeno, y=presenetili_domaci + presenetili_gostje, fill = presenetili_domaci)) + 
   geom_col() + 
-  xlab("Sezona") + ylab("Povprečje zadetkov") + ggtitle("Primerjava zadetkov domače in gostujoče ekipe glede na sezono") +
-  theme(axis.text.x = element_text(size = rel(0.9)))
+  xlab("Sezona") + ylab("Število presenečenj") + ggtitle("Število presenečenj na tekmah glede na sezono") +
+  theme(axis.text.x = element_text(angle = 45 , size = rel(0.9))) + labs(fill = "Presenečenja domačinov")
   
   
 print(graf4)
 
 #--------------------------------------------------------------------------------------
 #5. GRAF - Ekipe, ki so osvojile največ točk 
+razpleti_tekem <- tabela_tekem %>%
+  transmute(domaca_ekipa, gostujoca_ekipa,
+            Zmaga_domaci = zadetki_domaci > zadetki_gostje,
+            Remi=zadetki_domaci == zadetki_gostje,
+            Zmaga_gosti= zadetki_domaci < zadetki_gostje)
 
-tocke <- tabela_tekem %>% select(sezona, osvojene_tocke_domaci, osvojene_tocke_gostje) %>%
-  gather(key=Zmagovalec, value="Tocke", -sezona) %>%
-  mutate(Zmagovalec=preimenovanje2[Zmagovalec]) %>%  
-  group_by(sezona, Zmagovalec) %>%
-  summarise(zmage = count(Tocke > 1), st_tekem = nrow(sezona))
-
-
-
-
-zmage <- Sezone %>%
-  transmute(Domaca_ekipa, Gostujoca_ekipa,
-            Zmaga_domaci = Zadetki_domaca_ekipa > Zadetki_gostujoca_ekipa,
-            Remi=Zadetki_domaca_ekipa == Zadetki_gostujoca_ekipa,
-            Zmaga_gosti= Zadetki_domaca_ekipa < Zadetki_gostujoca_ekipa)
-
-zmage.skupaj <- rbind(select(zmage, Ekipa=Domaca_ekipa, Zmaga=Zmaga_domaci, Remi, Poraz=Zmaga_gosti),
-                      select(zmage, Ekipa=Gostujoca_ekipa, Zmaga=Zmaga_gosti, Remi, Poraz=Zmaga_domaci)) %>%
+skupne_tocke <- rbind(select(razpleti_tekem, Ekipa=domaca_ekipa, Zmaga=Zmaga_domaci, Remi, Poraz=Zmaga_gosti),
+                      select(razpleti_tekem, Ekipa=gostujoca_ekipa, Zmaga=Zmaga_gosti, Remi, Poraz=Zmaga_domaci)) %>%
   group_by(Ekipa) %>% summarise(Zmage=sum(Zmaga), Remiji=sum(Remi), Porazi=sum(Poraz)) %>%
-  mutate(Tocke = 3*Zmage + Remiji)
+  mutate(Tocke = 3*Zmage + Remiji) 
+
+top_20_1 <- skupne_tocke[order(skupne_tocke$Tocke, decreasing = TRUE), ]
+top_20 <- top_20_1[1:20, ]
+
+graf5 <- (ggplot(top_20, aes(x=reorder(Ekipa, Tocke), y=Tocke)) + geom_col() + coord_flip() + xlab("Ekipa") + ylab("Tocke"))
 
 
+print(graf5)
 
 #--------------------------------------------------------------------------------------
 #6. GRAF - Kakšen delež točk so ekipe osvojile doma (Ekipe v PL)
+ang_tekme_doma <- tabela_ang %>% select(domaca_ekipa, osvojene_tocke_domaci) %>%
+  group_by(domaca_ekipa) %>% summarise(sum(osvojene_tocke_domaci))
+colnames(ang_tekme_doma) <- c("Ekipa", "Tocke_doma")
+
+ang_tekme_gosti <- tabela_ang %>% select(gostujoca_ekipa, osvojene_tocke_gostje) %>%
+  group_by(gostujoca_ekipa) %>% summarise(sum(osvojene_tocke_gostje))
+colnames(ang_tekme_gosti) <- c("Ekipa", "Tocke_v_gosteh")
 
 
+ang_tekme <- merge(ang_tekme_doma, ang_tekme_gosti, by = 'Ekipa')
+ang_tekme$Razmerje_tock <- as.numeric(paste(ang_tekme$Tocke_doma /(ang_tekme$Tocke_doma + ang_tekme$Tocke_v_gosteh)))
+#ang_tekme1 <- ang_tekme[order(ang_tekme$Razmerje_tock, decreasing = TRUE), ]
 
 
+graf6 <- ggplot(ang_tekme, aes(x=reorder(Ekipa, Razmerje_tock), y=Razmerje_tock)) + 
+  geom_col(orientation = "x")  + scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  coord_cartesian(ylim = c(0.4, 0.8)) + coord_flip() +
+  xlab("Ekipa") + ylab("Tocke")
+
+
+print(graf6)
 #--------------------------------------------------------------------------------------
 #7. GRAF - Osvojene točke doma glede na kapaciteto stadiona (Ekipe v PL)
 
