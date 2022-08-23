@@ -203,9 +203,60 @@ print(graf8)
 #ZEMLJEVIDI
 
 #1. ZEMLJEVID - Najbolj odprte tekme v Evropi
+zemljevid <- uvozi.zemljevid("http://baza.fmf.uni-lj.si/110m_cultural.zip",
+                             "ne_110m_admin_0_countries", encoding="UTF-8")
+zemljevid1 <- zemljevid[zemljevid$CONTINENT == "Europe",]
+
+zemljevid_EUR <- tm_shape(merge(zemljevid1,
+                                povprecje_golov_lige %>% group_by(drzava) %>% summarise(sum(Povprecje)),
+                                by.x="SOVEREIGNT", by.y="drzava"), xlim=c(-15, 38), ylim=c(30, 75)) +
+  tm_polygons("goalPerGame", title="Goli na tekmo") + ggtitle("Goli na tekmo po ligah")
 
 
 
-
+#print(zemljevid_EUR)
 #--------------------------------------------------------------------------------------
 #2. ZEMLJEVID - Najtežja gostovanja v PL
+UK <- uvozi.zemljevid("https://biogeo.ucdavis.edu/data/gadm3.6/shp/gadm36_GBR_shp.zip", "gadm36_GBR_2",
+                      encoding="UTF-8")
+
+klubi <- c("Manchester United"="Manchester",
+           "Manchester City" = "Salford",
+           "AFC Bournemouth" = "Bournemouth",
+           "Leicester City" = "Leicester",
+           "Southampton" = "Southampton",
+           "Cardiff City" = "Cardiff",
+           "Brighton and Hove Albion" = "Brighton and Hove",
+           "Huddersfield Town" = "Calderdale",
+           "Everton" = "Sefton",
+           "Aston Villa" = "Coventry",
+           "Newcastle United" = "Newcastle upon Tyne",
+           "Wolverhampton Wanderers" = "Wolverhampton", 
+           "West Bromwich Albion" = "Dudley",
+           "Liverpool" = "Saint Helens",
+           "Watford" = "Luton",
+           "Burnley" = "Bury",
+           "Norwich" = "Peterborough",
+           "Arsenal" = "Greater London",
+           "West Ham" = "Greater London",
+           "Fulham" = "Greater London",
+           "Chelsea"= "Greater London",
+           "Crystal Palace" = "Greater London",
+           "Tottenham Hotspur" = "Greater London",
+           "Leeds United" = "Leeds",
+           "Sheffield United" = "Sheffield"
+)
+
+
+klubi.regija <- data.frame(Ekipa=names(klubi),
+                           Regija=parse_factor(klubi, levels(UK$NAME_2)),
+                           stringsAsFactors=FALSE)
+EngWal <- UK[UK$NAME_1 %in% c("England", "Wales"),]
+
+
+tocke.regije <- ang_tekme %>% inner_join(klubi.regija) %>%
+  group_by(Regija) %>% summarise(Tocke=mean(Tocke_doma))
+
+zem.tocke <- merge(EngWal, tocke.regije, by.x="NAME_2", by.y="Regija")
+
+zemljevid_PL <- tm_shape(zem.tocke) + tm_polygons("Tocke") + tm_legend(show=TRUE)

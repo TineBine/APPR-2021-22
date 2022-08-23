@@ -95,7 +95,7 @@ ang_ekipe <- unique(tabela_ang$domaca_ekipa)
 
 uvozi.stadione <- function() {
   link <- "https://en.wikipedia.org/wiki/List_of_football_stadiums_in_England"
-  stran <- html_session(link) %>% read_html()
+  stran <- session(link) %>% read_html()
   tabela <- html_node(stran, ".wikitable")
   tabela <- html_table(tabela, fill= TRUE) 
   tabela = tabela[2:5]
