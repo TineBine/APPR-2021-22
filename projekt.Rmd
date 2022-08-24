@@ -58,6 +58,14 @@ source("vizualizacija/vizualizacija.r", encoding="UTF-8")
 
 ***
 
+
+
+
+```{r zemljevid_PL, echo=FALSE, fig.align='center'}
+zemljevid_PL
+```
+
+
 ## Napredna analiza podatkov
 
 ```{r analiza}

@@ -113,7 +113,9 @@ skupne_tocke <- rbind(select(razpleti_tekem, Ekipa=domaca_ekipa, Zmaga=Zmaga_dom
 top_20_1 <- skupne_tocke[order(skupne_tocke$Tocke, decreasing = TRUE), ]
 top_20 <- top_20_1[1:20, ]
 
-graf5 <- (ggplot(top_20, aes(x=reorder(Ekipa, Tocke), y=Tocke)) + geom_col() + coord_flip() + xlab("Ekipa") + ylab("Tocke"))
+graf5 <- ggplot(top_20, aes(x=reorder(Ekipa, Tocke), y=Tocke, fill=Ekipa)) + 
+            geom_col() + coord_flip() + xlab("Ekipa") + ylab("Točke") + 
+  scale_color_gradientn(colours = rainbow(20))
 
 
 print(graf5)
@@ -201,21 +203,29 @@ graf8 <- ggplot(tekme_urejeno, aes(drzava, Value, fill = Rezultat)) + geom_col(p
 print(graf8)
 #======================================================================================
 #ZEMLJEVIDI
-
 #1. ZEMLJEVID - Najbolj odprte tekme v Evropi
 zemljevid <- uvozi.zemljevid("http://baza.fmf.uni-lj.si/110m_cultural.zip",
                              "ne_110m_admin_0_countries", encoding="UTF-8")
 zemljevid1 <- zemljevid[zemljevid$CONTINENT == "Europe",]
 
+slovar_inverz <- slovar <- c("Francija" = "France",
+                             "Nemčija" = "Germany",
+                             "Italija" = "Italy",
+                             "Španija" = "Spain",
+                             "Združeno kraljestvo" = "United Kingdom")
+
 zemljevid_EUR <- tm_shape(merge(zemljevid1,
-                                povprecje_golov_lige %>% group_by(drzava) %>% summarise(sum(Povprecje)),
-                                by.x="SOVEREIGNT", by.y="drzava"), xlim=c(-15, 38), ylim=c(30, 75)) +
-  tm_polygons("goalPerGame", title="Goli na tekmo") + ggtitle("Goli na tekmo po ligah")
+                                povprecje_golov_lige %>% mutate(drzava=slovar_inverz[drzava]) %>% 
+                                  group_by(drzava) %>% summarise(goli_na_tekmo = sum(Povprecje)),
+                                by.x="SOVEREIGNT", by.y="drzava")) + tmap_options(check.and.fix = TRUE)
+  tm_polygons("goli_na_tekmo", title="Goli na tekmo") + ggtitle("Goli na tekmo po ligah")
 
 
 
 #print(zemljevid_EUR)
 #--------------------------------------------------------------------------------------
+
+
 #2. ZEMLJEVID - Najtežja gostovanja v PL
 UK <- uvozi.zemljevid("https://biogeo.ucdavis.edu/data/gadm3.6/shp/gadm36_GBR_shp.zip", "gadm36_GBR_2",
                       encoding="UTF-8")
@@ -229,14 +239,14 @@ klubi <- c("Manchester United"="Manchester",
            "Brighton and Hove Albion" = "Brighton and Hove",
            "Huddersfield Town" = "Calderdale",
            "Everton" = "Sefton",
-           "Aston Villa" = "Coventry",
+           "Aston Villa" = "Birmingham",
            "Newcastle United" = "Newcastle upon Tyne",
            "Wolverhampton Wanderers" = "Wolverhampton", 
            "West Bromwich Albion" = "Dudley",
            "Liverpool" = "Saint Helens",
            "Watford" = "Luton",
            "Burnley" = "Bury",
-           "Norwich" = "Peterborough",
+           "Norwich City" = "Norfolk",
            "Arsenal" = "Greater London",
            "West Ham" = "Greater London",
            "Fulham" = "Greater London",
@@ -255,8 +265,10 @@ EngWal <- UK[UK$NAME_1 %in% c("England", "Wales"),]
 
 
 tocke.regije <- ang_tekme %>% inner_join(klubi.regija) %>%
-  group_by(Regija) %>% summarise(Tocke=mean(Tocke_doma))
+  group_by(Regija) %>% summarise(Točke=mean(Tocke_doma))
 
 zem.tocke <- merge(EngWal, tocke.regije, by.x="NAME_2", by.y="Regija")
 
-zemljevid_PL <- tm_shape(zem.tocke) + tm_polygons("Tocke") + tm_legend(show=TRUE)
+zemljevid_PL <- tm_shape(zem.tocke) + tm_polygons("Točke") + tm_legend(show=TRUE)
+
+
