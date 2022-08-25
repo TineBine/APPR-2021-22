@@ -19,10 +19,17 @@ source("lib/libraries.r", encoding="UTF-8")
 
 
 ## Izbira teme
+
+***
 V analizi sem si v 5 najmočnjejših evropskih nogometnih ligah ogledal zadnje sezone 18/19, 19/20, in 20/21. Slednja velja za korona sezono, ko so se tekme igrale pred praznimi tribunami. Zanimalo me je kako se posamezne lige razlikujejo med sabo po številu zadetkov na tekmo ter kako se je to spremenilo, ko se je igrali pred praznimi tribunami. Hkrati me je zanimal tudi uspeh ekip na domačem igrišču v teh različnih sezonah. Podrobneje sem si ogledal razplete derbijev v vsaki ligi, za derbi sem vpošteval, da sta med sabo igrali ekipi, ki sta uvrščeni med top 6 ekip. 
 
 
-Slika!!!
+<br>
+<center>
+
+![](slike/european-leagues-1024x640.jpg)
+<center>
+
 
 ## Obdelava, uvoz in čiščenje podatkov
 
@@ -49,6 +56,7 @@ Podrobneje me je zanimala Angleška Premier Liga, zato sem za klube, ki so v nje
 -   `Ekipa` - Ekipa, ki igra nas stadionu domače tekme
 
 
+***
 
 ## Analiza in vizualizacija podatkov
 
@@ -56,15 +64,61 @@ Podrobneje me je zanimala Angleška Premier Liga, zato sem za klube, ki so v nje
 source("vizualizacija/vizualizacija.r", encoding="UTF-8")
 ```
 
-***
+
+Za začetek si oglejmo primerjavo zadetkov po različnih sezonah za vsako ligo. Rezultati so precej različni in je iz njih na prvi pogled težko potrditi kakšne sklepe. Vidimo pa, da se je, z izjemo nemške lige, v sezoni 20/21 v vseh ligah povečalo število zadetkov gostujoče ekipe. Na to je seveda vplivalo več manjših faktorjev, glavni pa je bil igranje pred praznimi tribunami zaradi pandemije koronavirusa, ko navijačem ni bilo dovoljeno vstopiti na stadion.
+```{r graf2, echo=FALSE, fig.align='center'}
+graf2
+```
 
 
+Na grafu lahko opazimo tudi, da v nekaterih ligah v povprečju pade več golov na tekmo. Ta podatek sem predstavil na naslednjem zemljevidu. Sklepamo lahko torej, da se v Nemčiji igra najbolj napadalen nogomet, medtem ko je v Španiji največji poudarek na obrambi.
+```{r zemljevid_EUR, echo=FALSE, fig.align='center'}
+zemljevid_EUR
+```
 
 
+Zaradi povečanja števila zadetkov gostujočih ekip v sezoni 20/21 se pričakuje, da so te ekipe tudi več zmagovale. Hipotezo nam potrdi naslednji graf, kjer vidimo, da so gostujoče ekipe v povprečju zmagale skoraj 5% več tekem v sezoni 20/21.
+```{r graf3, echo=FALSE, fig.align='center'}
+graf3
+```
+
+
+Naslednji graf prikazuje število presenečenj v vsaki sezoni posamezne lige. Za presenečenje se smatra, ko ekipa, ki je nižje uvrščena na lestvici premaga višje uvrščeno ekipo. V analizo sem vzel le tekme po 5. kolu, ko so ekipe že nekoliko razvščene po moči. Sprva je potrebno razumeti, da se v nemški ligi igra bitveno majn tekem na sezono zaradi manjšega števila ekip, prav tako se je zaradi pandemije koronavirusa francoska liga v sezoni 19/20 predčasno končala. To sta glavna razloga za manje število presenečenj v pripadajočih sezonah. Opazimo pa lahko, da je v vseh ligah v sezoni 20/21 bistveno manjši delež presenečenj domače ekipe, kar lahko spet razložimo s pomanjkanjem navijačev. 
+```{r graf4, echo=FALSE, fig.align='center'}
+graf4
+```
+
+
+Naprej me je zanimalo, katere ekipe so bile v izbranih treh sezonah najuspešnejše. Za vse ekipe sem seštel število osvojenih točk, jih uredil od največ do najmanj in izbral prvih dvajset ekip. Prvi dve ekipi sta iz iste lige, angleške lige, še bolj neverjetno pa je, da sta osvojili ravno enako število točk. To kaže, da sta bili ekipi razred zase v teh sezonah, ostali ekipi iz angleške lige, Man Utd in Chelsea, sta zbrali več kot 50 točk manj. Prav tako bi bilo zanimivo videti kje bi končali ekipi Paris SG iz francoske in FC Bayern iz nemške lige, če bi odigrali enako število tekem.
+```{r graf5, echo=FALSE, fig.align='center'}
+graf5
+```
+
+
+Sam najbolj spremljam angleško Premier ligo, zato sem hotel podrobneje pogledati ekipe, ki so v njej igrale. Najprej sem želel pogledati razmerje osvojenih točk doma in v gosteh. Z rdečo barvo sem označil ekipe, ki so zagotovo zbrale premalo točk in so izpadle iz lige, oranžne ekipe so prav tako bile vpletene v boj za obstanek v ligi, rumene so ekipe na sredini lestvice, zelene pa so se borile za najvišja mesta. Na grafu spet vidimo velik prepad med ekipama Manchester City in Liverpool ter ostalimi ekipami.
+```{r graf6, echo=FALSE, fig.align='center'}
+graf6
+```
+
+
+Hotel sem pogledati še razmerje med kapaciteto stadiona in osvojenimi točkami doma. Sklepamo lahko, da najboljše ekipe igrajo v največjih stadionih in se od njih pričakuje velik izplen točk. Ohranil sem enako barvno shemo kot na prejšnjem grafu. Na grafu sem z linearno regresijo tudi določil optimalno razmerje osvojenih točk pogojno na kapaciteto glede na podatke.
+```{r graf7, echo=FALSE, fig.align='center'}
+graf7
+```
+
+
+Za Premier ligo sem še na zemljevidu predtsavil najtežja gostovanja, torej v katerih regijah Anglije je najtežje iztržiti točke za gostujoče ekipe. Ker je v Londonu lociranih več ekip, sem vzel njihovo povprečje. Spet izstopata regiji, kjer se nahajata Liverpool in Manchester City.
 ```{r zemljevid_PL, echo=FALSE, fig.align='center'}
 zemljevid_PL
 ```
 
+
+Za konec sem želel pogledati še rezultate derbijev najboljših šestih ekip v vsaki ligi. Tu lahko na podlagi števila remijev sklepamo v kateri ligi so ekipe pri vrhu najbolj izenačene.
+```{r graf8, echo=FALSE, fig.align='center'}
+graf8
+```
+
+***
 
 ## Napredna analiza podatkov
 
@@ -73,7 +127,7 @@ source("analiza/analiza.r", encoding="UTF-8")
 ```
 
 ***
-
+Naredil sem tudi aplikacijo Shiny, ki prikazuje korelacije med različnimi spremenljivkami za ekipe iz Premier lige.
 ```{r shiny}
 shinyAppDir("shiny", options=list(width="100%", height=600))
 ```

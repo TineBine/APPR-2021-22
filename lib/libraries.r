@@ -12,6 +12,7 @@ library(scales)
 library(ggrepel)
 library(zoo)
 library(data.table)
+library(sf)
 
 options(gsubfn.engine="R")
 

@@ -27,7 +27,7 @@ graf1 <- ggplot(povprecje_golov_lige, aes(x=drzava, y=Povprecje, fill=Gostovanje
   xlab("Država") + ylab("Povprečni goli na tekmo") + ggtitle("Primerjava golov domače in gostujoče ekipe glede na državo")
 
 
-print(graf1)
+#print(graf1)
 
 #--------------------------------------------------------------------------------------
 #2. GRAF - Goli na tekmo po sezonah
@@ -41,10 +41,10 @@ povprecje_golov_sezone <- tabela_tekem %>% select(zdruzeno, zadetki_domaci, zade
 graf2 <- ggplot(povprecje_golov_sezone, aes(x=zdruzeno, y=Povprecje, fill=Gostovanje)) + 
   geom_col() + 
   xlab("Sezona") + ylab("Povprečni goli na tekmo") + ggtitle("Primerjava golov domače in gostujoče ekipe glede na sezono") +
-  theme(axis.text.x = element_text(size = rel(0.9)))
+  theme(axis.text.x = element_text(angle = 45, size = rel(0.9)))
 
 
-print(graf2)
+#print(graf2)
 
 
 
@@ -75,7 +75,7 @@ graf3 <- ggplot(zmage, aes(x=sezona, y=odstotek, fill=Zmagovalec)) +
 
 
 
-print(graf3)
+#print(graf3)
 #--------------------------------------------------------------------------------------
 #4. GRAF - Na koliko tekmah je prišlo do presenečenja
 po_5_tekmah <- tabela_tekem[tabela_tekem$kolo > 5, ]
@@ -95,7 +95,7 @@ graf4 <- ggplot(presenecenje, aes(x=zdruzeno, y=presenetili_domaci + presenetili
   theme(axis.text.x = element_text(angle = 45 , size = rel(0.9))) + labs(fill = "Presenečenja domačinov")
   
   
-print(graf4)
+#print(graf4)
 
 #--------------------------------------------------------------------------------------
 #5. GRAF - Ekipe, ki so osvojile največ točk 
@@ -118,7 +118,7 @@ graf5 <- ggplot(top_20, aes(x=reorder(Ekipa, Tocke), y=Tocke, fill=Ekipa)) +
   scale_color_gradientn(colours = rainbow(20))
 
 
-print(graf5)
+#print(graf5)
 
 #--------------------------------------------------------------------------------------
 #6. GRAF - Kakšen delež točk so ekipe osvojile doma (Ekipe v PL)
@@ -150,7 +150,7 @@ graf6 <- ggplot(ang_tekme, aes(x=Tocke_doma, y=Tocke_v_gosteh, label = Ekipa)) +
 
 
 
-print(graf6)
+#print(graf6)
 #--------------------------------------------------------------------------------------
 #7. GRAF - Osvojene točke doma glede na kapaciteto stadiona (Ekipe v PL)
 tocke_kapaciteta <- merge(ang_tekme, stadioni, by = 'Ekipa')
@@ -170,7 +170,7 @@ graf7 <- ggplot(tocke_kapaciteta, aes(x=Kapaciteta, y=Tocke_doma, label = Stadio
 
 
 
-print(graf7)
+#print(graf7)
 
 
 #--------------------------------------------------------------------------------------
@@ -200,12 +200,12 @@ graf8 <- ggplot(tekme_urejeno, aes(drzava, Value, fill = Rezultat)) + geom_col(p
 
 
 
-print(graf8)
+#print(graf8)
 #======================================================================================
 #ZEMLJEVIDI
 #1. ZEMLJEVID - Najbolj odprte tekme v Evropi
-zemljevid <- uvozi.zemljevid("http://baza.fmf.uni-lj.si/110m_cultural.zip",
-                             "ne_110m_admin_0_countries", encoding="UTF-8")
+zemljevid <-  uvozi.zemljevid("http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/50m/cultural/ne_50m_admin_0_countries.zip",
+                              "ne_50m_admin_0_countries", encoding = "UTF-8")
 zemljevid1 <- zemljevid[zemljevid$CONTINENT == "Europe",]
 
 slovar_inverz <- slovar <- c("Francija" = "France",
@@ -214,18 +214,17 @@ slovar_inverz <- slovar <- c("Francija" = "France",
                              "Španija" = "Spain",
                              "Združeno kraljestvo" = "United Kingdom")
 
-zemljevid_EUR <- tm_shape(merge(zemljevid1,
-                                povprecje_golov_lige %>% mutate(drzava=slovar_inverz[drzava]) %>% 
-                                  group_by(drzava) %>% summarise(goli_na_tekmo = sum(Povprecje)),
-                                by.x="SOVEREIGNT", by.y="drzava")) + tmap_options(check.and.fix = TRUE)
-  tm_polygons("goli_na_tekmo", title="Goli na tekmo") + ggtitle("Goli na tekmo po ligah")
+drzave_goli_na_tekmo <- povprecje_golov_lige %>% mutate(drzava=slovar_inverz[drzava]) %>% 
+  select(drzava, Povprecje) %>% group_by(drzava) %>% 
+  summarise(goli_na_tekmo = sum(Povprecje))
+
+zem_goli <- merge(zemljevid1, drzave_goli_na_tekmo, by.x="SOVEREIGNT", by.y="drzava")
 
 
+zemljevid_EUR <- tm_shape(merge(zemljevid1, drzave_goli_na_tekmo, by.x="NAME", by.y="drzava"),
+                          xlim=c(-15, 38), ylim=c(30, 75)) + tm_polygons("goli_na_tekmo", title = "Goli na tekmo") + tm_legend(show=TRUE)
 
-#print(zemljevid_EUR)
 #--------------------------------------------------------------------------------------
-
-
 #2. ZEMLJEVID - Najtežja gostovanja v PL
 UK <- uvozi.zemljevid("https://biogeo.ucdavis.edu/data/gadm3.6/shp/gadm36_GBR_shp.zip", "gadm36_GBR_2",
                       encoding="UTF-8")
@@ -236,7 +235,7 @@ klubi <- c("Manchester United"="Manchester",
            "Leicester City" = "Leicester",
            "Southampton" = "Southampton",
            "Cardiff City" = "Cardiff",
-           "Brighton and Hove Albion" = "Brighton and Hove",
+           "Brighton & Hove Albion" = "Brighton and Hove",
            "Huddersfield Town" = "Calderdale",
            "Everton" = "Sefton",
            "Aston Villa" = "Birmingham",
@@ -248,7 +247,7 @@ klubi <- c("Manchester United"="Manchester",
            "Burnley" = "Bury",
            "Norwich City" = "Norfolk",
            "Arsenal" = "Greater London",
-           "West Ham" = "Greater London",
+           "West Ham United" = "Greater London",
            "Fulham" = "Greater London",
            "Chelsea"= "Greater London",
            "Crystal Palace" = "Greater London",
@@ -258,17 +257,22 @@ klubi <- c("Manchester United"="Manchester",
 )
 
 
-klubi.regija <- data.frame(Ekipa=names(klubi),
+klubi_regija <- data.frame(Ekipa=names(klubi),
                            Regija=parse_factor(klubi, levels(UK$NAME_2)),
                            stringsAsFactors=FALSE)
-EngWal <- UK[UK$NAME_1 %in% c("England", "Wales"),]
+AngWal <- UK[UK$NAME_1 %in% c("England", "Wales"),]
 
 
-tocke.regije <- ang_tekme %>% inner_join(klubi.regija) %>%
-  group_by(Regija) %>% summarise(Točke=mean(Tocke_doma))
+ang_tocke_gostov <- tabela_ang %>% select(domaca_ekipa, osvojene_tocke_gostje) %>%
+  group_by(domaca_ekipa) %>% summarise(mean(osvojene_tocke_gostje))
+colnames(ang_tocke_gostov) <- c("Ekipa", "Tocke_gostov")
 
-zem.tocke <- merge(EngWal, tocke.regije, by.x="NAME_2", by.y="Regija")
 
-zemljevid_PL <- tm_shape(zem.tocke) + tm_polygons("Točke") + tm_legend(show=TRUE)
+tocke_regije <- ang_tocke_gostov %>% right_join(klubi_regija, by = "Ekipa") %>%
+  select(Tocke_gostov, Regija) %>% group_by(Regija) %>% summarise(Tocke= mean(Tocke_gostov))
+
+zem_tocke <- merge(AngWal, tocke_regije, by.x="NAME_2", by.y="Regija")
+
+zemljevid_PL <- tm_shape(zem_tocke) + tm_polygons("Tocke", title = "Osvojene točke gostov") + tm_legend(show=TRUE)
 
 
