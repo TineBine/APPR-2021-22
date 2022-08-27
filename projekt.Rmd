@@ -126,8 +126,34 @@ graf8
 source("analiza/analiza.r", encoding="UTF-8")
 ```
 
+
+Z metodami strojnega učenja sem želel sestaviti napovedni model, ki bi računal pričakovano število osvojenih točk ekipe na naslednji tekmi. Pripravil sem novo tabelo, v katero sem za vsako ekipo vnesel vsako tekmo, ki jo je odigrala v treh sezonah. Končno tabelo sem poimenoval `po_kolih_forma` s stolpci:
+
+-   `sezona` - sezona v kateri je bila tekma
+-   `kolo` - kolo prvenstva v katerem se je igrala tekma
+-   `Ekipa` - ime ekipe
+-   `Lestvica` - položaj na lestvici pred tekmo
+-   `Forma` - število osvojenih točk na zadnjih 5 tekmah
+-   `Strelska_forma` - število golov doseženih na zadnjih 5 tekmah
+-   `Lestvica_nasprotnik` - položaj na lestvici nasprotnika
+-   `Osvojene_točke` - število točk osvojenih na tekmi
+
+Tabeli sem nato preimenoval stolpce v pojasnjevalne spremenljivke `x_i` in odvisno spremenljivko `yn` ter dodal stolpec `yd` za razvščevalni model in odstranil stolpec `Ekipa`, tako, da so ostali le še stolpci številskih spremenljivk. Preizkusil sem 5 modelov tri z algoritmom naključnih gozdovov in dva z linearno regresijo. Napovedno napako modelov pa sem ocenil po metodi prečnega preverjanja.
+
+Izkazalo se je, da je pri napovedovanju pričakovanega števila točk prišlo do zelo velike napake, ne glede na izbiro modela. Razlog v tem je, da so vrednosti `yn` lahko le `0,1,3` tako je pri napačni napovedi bila napaka vedno velikosti vsaj `1`.
+
+Tako sem se odločil narediti še razvrščevalni model, ki bi napovedoval ali bo ekipa na tekmi zmagala ali ne. Če je bilo število osvojenih točk na tekmi enako 3, je bila vrednost `yd = 1`, sicer je bila `-1`. Vzel sem enakih 5 modelov in jih spet  razdelil na tri z algoritmom naključnih gozdov in dva z logistično regresijo. Na spodnjem grafu so prikazane napovedne napake modelov.
+
+```{r graf_napak, echo=FALSE, fig.align='center'}
+graf_napak
+```
+
+Kot najboljši se je izkazal model z algoritmom logistične regresije, v katerega so vključene vse pojasnjevalne spremenljivke. Napake so tudi v razvrščevalnem modelu razmeroma viskoke, kar nakazuje na to, da v modelu nimamo dostopa do pomembnih podatkov, ki vplivajo na rezultat, npr. poškodbe pomembnih igralcev v ekipi.
+
+
 ***
-Naredil sem tudi aplikacijo Shiny, ki prikazuje korelacije med različnimi spremenljivkami za ekipe iz Premier lige.
+
 ```{r shiny}
 shinyAppDir("shiny", options=list(width="100%", height=600))
 ```
+Naredil sem tudi aplikacijo Shiny, ki prikazuje korelacije med različnimi spremenljivkami za ekipe iz Premier lige.
