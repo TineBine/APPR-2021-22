@@ -22,9 +22,9 @@ povprecje_golov_lige <- tabela_tekem %>% select(drzava, zadetki_domaci, zadetki_
   summarise(Povprecje = mean(Zadetki, na.rm = TRUE))
 
 
-graf1 <- ggplot(povprecje_golov_lige, aes(x=drzava, y=Povprecje, fill=Gostovanje)) + 
-  geom_col() + 
-  xlab("Država") + ylab("Povprečni goli na tekmo") + ggtitle("Primerjava golov domače in gostujoče ekipe glede na državo")
+#graf1 <- ggplot(povprecje_golov_lige, aes(x=drzava, y=Povprecje, fill=Gostovanje)) + 
+#  geom_col() + 
+#  xlab("Država") + ylab("Povprečni goli na tekmo") + ggtitle("Primerjava golov domače in gostujoče ekipe glede na državo")
 
 
 #print(graf1)
@@ -81,19 +81,23 @@ graf3 <- ggplot(zmage, aes(x=sezona, y=odstotek, fill=Zmagovalec)) +
 po_5_tekmah <- tabela_tekem[tabela_tekem$kolo > 5, ]
 
 presenecenje <- po_5_tekmah %>%
-  select(zdruzeno, lestvica_domaci, lestvica_gostje, osvojene_tocke_domaci, osvojene_tocke_gostje) %>%
-  mutate(domaci = (lestvica_domaci < lestvica_gostje) & (osvojene_tocke_domaci > osvojene_tocke_gostje), 
-         gostje = (lestvica_domaci > lestvica_gostje) & (osvojene_tocke_domaci < osvojene_tocke_gostje)) %>%
-  group_by(zdruzeno) %>%
-  summarise(presenetili_domaci = count(domaci),
-            presenetili_gostje = count(gostje))
+  select(drzava, sezona, lestvica_domaci, lestvica_gostje, osvojene_tocke_domaci, osvojene_tocke_gostje) %>%
+  mutate(domaci = (lestvica_domaci > lestvica_gostje + 5) & (osvojene_tocke_domaci > osvojene_tocke_gostje), 
+         gostje = (lestvica_gostje > lestvica_domaci + 5) & (osvojene_tocke_domaci < osvojene_tocke_gostje)) %>%
+  group_by(drzava, sezona) %>%
+  summarise(Domači = count(domaci),
+            Gostje = count(gostje)) %>% select_all %>%
+  pivot_longer(., cols = c(Domači, Gostje), names_to = "Gostovanje", values_to = "Presenecenja")
 
 
-graf4 <- ggplot(presenecenje, aes(x=zdruzeno, y=presenetili_domaci + presenetili_gostje, fill = presenetili_domaci)) + 
-  geom_col() + 
-  xlab("Sezona") + ylab("Število presenečenj") + ggtitle("Število presenečenj na tekmah glede na sezono") +
-  theme(axis.text.x = element_text(angle = 45 , size = rel(0.9))) + labs(fill = "Presenečenja domačinov")
-  
+
+graf4 <- ggplot(presenecenje, aes(x=sezona, y=Presenecenja, color = Gostovanje), group = drzava) + 
+  geom_point() +
+  geom_line(size = 1) +
+  scale_x_continuous(breaks = 18:20) +
+  theme_light() +
+  xlab("Sezona") + ylab("Presenečenja") + ggtitle("Število presenečenj na tekmah glede na sezono") +
+  facet_wrap(~ drzava, ncol = 3) 
   
 #print(graf4)
 
@@ -222,7 +226,7 @@ zem_goli <- merge(zemljevid1, drzave_goli_na_tekmo, by.x="SOVEREIGNT", by.y="drz
 
 
 zemljevid_EUR <- tm_shape(merge(zemljevid1, drzave_goli_na_tekmo, by.x="NAME", by.y="drzava"),
-                          xlim=c(-15, 38), ylim=c(30, 75)) + tm_polygons("goli_na_tekmo", title = "Goli na tekmo") + tm_legend(show=TRUE)
+                          xlim=c(-27, 35), ylim=c(30, 75)) + tm_polygons("goli_na_tekmo", title = "Goli na tekmo") + tm_legend(show=TRUE)
 
 #--------------------------------------------------------------------------------------
 #2. ZEMLJEVID - Najtežja gostovanja v PL

@@ -218,7 +218,7 @@ napake <- tibble(
 )
 
 graf_napak <- ggplot(napake, aes(x=model, y=napaka, color=tip)) + geom_point() + 
-  geom_line() + scale_x_continuous(breaks = 1:5) +
+  geom_line(size = 1) + scale_x_continuous(breaks = 1:5) +
   scale_y_continuous()
 
 #print(graf_napak)
