@@ -200,7 +200,8 @@ tekme_urejeno <- za_graf[order(za_graf$drzava), ]
 
 
 graf8 <- ggplot(tekme_urejeno, aes(drzava, Value, fill = Rezultat)) + geom_col(position = "dodge") +
-  labs(x = "Država", y = "Število rezultatov", title = "Rezultati med TOP 6 ekipami glede na ligo")
+  labs(x = "Država", y = "Število rezultatov", title = "Rezultati med TOP 6 ekipami glede na ligo") + 
+  scale_fill_discrete(labels=c("Remiji", "Zmage domačih", "Zmage gostov"))
 
 
 

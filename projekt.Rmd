@@ -21,7 +21,7 @@ source("lib/libraries.r", encoding="UTF-8")
 ## Izbira teme
 
 ***
-V analizi sem si v 5 najmočnejših evropskih nogometnih ligah ogledal sezone 18/19, 19/20, in 20/21. Slednja velja za korona sezono, ko so se tekme igrale pred praznimi tribunami. Zanimalo me je kako se posamezne lige razlikujejo med sabo po številu zadetkov na tekmo ter kako se je to spremenilo, ko se je igralo pred praznimi tribunami. Hkrati me je zanimal tudi uspeh ekip na domačem igrišču v teh različnih sezonah. Podrobneje sem si ogledal razplete derbijev v vsaki ligi, za derbi sem upošteval, da sta med sabo igrali ekipi, ki sta uvrščeni med top 6 ekip. 
+V analizi sem si v 5 najmočnejših evropskih nogometnih ligah ogledal sezone 18/19, 19/20, in 20/21. Slednja velja za korona sezono, ko so se tekme igrale pred praznimi tribunami. Zanimalo me je kako se posamezne lige razlikujejo med sabo po številu zadetkov na tekmo ter kako se je to spremenilo, ko se je igralo pred praznimi tribunami. Hkrati me je zanimal tudi uspeh ekip na domačem igrišču v teh različnih sezonah. Podrobneje sem si ogledal razplete derbijev v vsaki ligi. Za derbi sem upošteval, da sta med sabo igrali ekipi, ki sta v ligi uvrščeni med top 6 ekip. 
 
 
 <br>
@@ -38,21 +38,23 @@ source("uvoz/uvoz.r", encoding="UTF-8")
 ```
 Za vsako sezono v posamezni ligi sem na spretni strani <https://www.transfermarkt.com/> pridobil podatke o rezultatih v posameznem krogu in jih združil v skupno tabelo oblike CSV, ki sem jo uvozil v R. V tabeli sem izbrisal stolpce `dan`, `datum` in `ura` ter dodal stolpca s podatki o osvojenih točkah domačih in gostov. Prečiščene podatke sem shranil v tabelo `tabela_tekem` s stoplci:
 
--   `kolo` - številska spremenljivka z vrednostmi 1-38
--   `lestvica_domaci` - položaj domače ekipe na lestvici, vrednosti 1-20
+-   `kolo` - številska spremenljivka z vrednostmi $1-38$
+-   `lestvica_domaci` - položaj domače ekipe na lestvici, vrednosti $1-20$
 -   `domaca_ekipa` - ime domače ekipe
--   `lestvica_gostje` - položaj gostujoče ekipe na lestvici, vrednosti 1-20
+-   `lestvica_gostje` - položaj gostujoče ekipe na lestvici, vrednosti $1-20$
 -   `gostujoca_ekipa` - ime gostujoče ekipe
--   `zadetki_domaci` - število zadetkov, ki jih je dosegla domača ekipa, vrednosti 0-9
--   `zadetki_gostje` - število zadetkov, ki jih je dosegla gostujoča ekipa, vrednosti 0-9
+-   `zadetki_domaci` - število zadetkov, ki jih je dosegla domača ekipa, vrednosti $0-9$
+-   `zadetki_gostje` - število zadetkov, ki jih je dosegla gostujoča ekipa, vrednosti $0-9$
+-   `osvojene_tocke_domaci` - število osvojenih točk domače ekipe, vrednosti $0,1$ ali $3$
+-   `osvojene_tocke_gostje` - število osvojenih točk gostujoče ekipe, vrednosti $0,1$ ali $3$
 -   `drzava` - država v kateri se igra liga
--   `sezona` - letnica začetka sezone, vrednosti 18-20
+-   `sezona` - letnica začetka sezone, vrednosti $18-20$
 
-Podrobneje me je zanimala Angleška Premier Liga, zato sem za klube, ki so v njej nastopali v izbranih sezonah, uvozil še podatke o stadionih, na katerih igrajo. Stadione sem uvozil iz Wikipedije, na naslovu <https://en.wikipedia.org/wiki/List_of_football_stadiums_in_England>, v obliki HTML, in shranil v tabelo `stadioni` s stolpci:
+Podrobneje me je zanimala angleška Premier Liga, zato sem za klube, ki so v njej nastopali v izbranih sezonah, uvozil še podatke o stadionih, na katerih igrajo. Stadione sem uvozil iz Wikipedije, na naslovu <https://en.wikipedia.org/wiki/List_of_football_stadiums_in_England>, v obliki HTML, in shranil v tabelo `stadioni` s stolpci:
 
 -   `Stadion` - ime stadiona
 -   `Mesto` - mesto, v katerem se stadion nahaja
--   `Kapaciteta` - število sedežev na stadionu, vrednosti 10000-80000
+-   `Kapaciteta` - število sedežev na stadionu, vrednosti $10000-80000$
 -   `Ekipa` - Ekipa, ki igra nas stadionu domače tekme
 
 
@@ -77,19 +79,19 @@ zemljevid_EUR
 ```
 
 
-Zaradi povečanja števila zadetkov gostujočih ekip v sezoni 20/21 se pričakuje, da so te ekipe tudi več zmagovale. Hipotezo nam potrdi naslednji graf, kjer vidimo, da so gostujoče ekipe v povprečju zmagale skoraj 5% več tekem v sezoni 20/21.
+Zaradi povečanja števila zadetkov gostujočih ekip v sezoni 20/21 se pričakuje, da so te ekipe tudi več zmagovale. Hipotezo nam potrdi naslednji graf, kjer vidimo, da so gostujoče ekipe v povprečju zmagale skoraj *5%* več tekem v sezoni 20/21.
 ```{r graf3, echo=FALSE, fig.align='center'}
 graf3
 ```
 
 
-Naslednji graf prikazuje število presenečenj v vsaki sezoni posamezne lige. Za presenečenje se smatra, ko ekipa, ki je uvrščena več kot 5 mest nižje na lestvici premaga višje uvrščeno ekipo. V analizo sem vzel le tekme po 5. kolu, ko so ekipe že nekoliko razvščene po moči. Sprva je potrebno razumeti, da se v nemški ligi igra le 34 tekem na sezono, za razliko od 38 v ostalih ligah, tako je zaradi manjšega števila tekem tudi manj možnosti za presenečenje. Kljub temu lahko sklepamo, da v tej obstaja jasna razlika po moči ekip in imajo nižje uvščene ekipe manjšo možnost presenečenja, še posebej na gostovanju. Obratno lahko sklepamo za špansko ligo, kjer je v povprečju največ presenečenj. Vsem ligam pa je skupen upad števila presenečenj domače ekipe v sezoni 20/21, ko na stadionih ni bilo navijačev, ki bi lahko navdihnili ekipo. Odsotnost navijačev pa se je poznala tudi za močnejše ekipe, saj se je skoraj v vseh ligah bistveno povečalo število presenečenj gostujoče ekipe.
+Naslednji graf prikazuje število presenečenj v vsaki sezoni posamezne lige. Za presenečenje se smatra, ko ekipa, ki je uvrščena več kot 5 mest nižje na lestvici premaga višje uvrščeno ekipo. V analizo sem vzel le tekme po 5. kolu, ko so ekipe že nekoliko razvščene po moči. Sprva je potrebno razumeti, da se v nemški ligi igra le 34 kol na sezono, za razliko od 38 v ostalih ligah, tako je zaradi manjšega števila tekem tudi manj možnosti za presenečenje. Tudi v francoskem prvenstvu, se je v sezoni 19/20 odigralo manj tekem zaradi pandemije koronavirusa, presenečenj pa je bilo celo več. Sklepamo lahko, da v nemški ligi obstaja jasna razlika po moči ekip in imajo nižje uvščene ekipe manjšo možnost presenečenja, še posebej na gostovanju. Obratno lahko sklepamo za špansko ligo, kjer je v povprečju največ presenečenj. Vsem ligam pa je skupna odsotnost navijačev in posledičen upad števila presenečenj domače ekipe v sezoni 20/21. Odsotnost navijačev pa se je poznala tudi za močnejše ekipe, saj se je v vseh ligah, z izjemo italijanske, bistveno povečalo število presenečenj gostujoče ekipe.
 ```{r graf4, echo=FALSE, fig.align='center'}
 graf4
 ```
 
 
-Naprej me je zanimalo, katere ekipe so bile v izbranih treh sezonah najuspešnejše. Za vse ekipe sem seštel število osvojenih točk, jih uredil od največ do najmanj in izbral prvih dvajset ekip. Prvi dve ekipi sta iz iste lige, angleške lige, še bolj neverjetno pa je, da sta osvojili ravno enako število točk. To kaže, da sta bili ekipi razred zase v teh sezonah, ostali ekipi iz angleške lige, Man Utd in Chelsea, sta zbrali več kot 50 točk manj. Prav tako bi bilo zanimivo videti kje bi končali ekipi Paris SG iz francoske in FC Bayern iz nemške lige, če bi odigrali enako število tekem.
+Naprej me je zanimalo, katere ekipe so bile v izbranih treh sezonah najuspešnejše. Za vse ekipe sem seštel število osvojenih točk, jih uredil od največ do najmanj in izbral prvih dvajset ekip. Prvi dve ekipi sta iz iste lige, angleške lige, še bolj neverjetno pa je, da sta osvojili ravno enako število točk. To kaže, da sta bili ekipi razred zase v teh sezonah. Ostali ekipi iz angleške lige, Man Utd in Chelsea, sta zbrali več kot $50$ točk manj. Prav tako bi bilo zanimivo videti kje bi končali ekipi Paris SG iz francoske in FC Bayern iz nemške lige, če bi odigrali enako število tekem kot v ostalih ligah.
 ```{r graf5, echo=FALSE, fig.align='center'}
 graf5
 ```
@@ -101,7 +103,7 @@ graf6
 ```
 
 
-Hotel sem pogledati še razmerje med kapaciteto stadiona in osvojenimi točkami doma. Sklepamo lahko, da najboljše ekipe igrajo v največjih stadionih in se od njih pričakuje velik izplen točk. Ohranil sem enako barvno shemo kot na prejšnjem grafu. Na grafu sem z linearno regresijo tudi določil optimalno razmerje osvojenih točk pogojno na kapaciteto glede na podatke.
+Hotel sem pogledati še razmerje med kapaciteto stadiona in osvojenimi točkami doma. Sklepamo lahko, da najboljše ekipe igrajo v največjih stadionih in se od njih pričakuje velik izplen točk. Ohranil sem enako barvno shemo kot na prejšnjem grafu. Na grafu sem z linearno regresijo tudi določil optimalno razmerje osvojenih točk pogojno na kapaciteto stadiona glede na podatke.
 ```{r graf7, echo=FALSE, fig.align='center'}
 graf7
 ```
@@ -126,6 +128,7 @@ graf8
 source("analiza/analiza.r", encoding="UTF-8")
 ```
 
+### Strojno učenje
 
 Z metodami strojnega učenja sem želel sestaviti napovedni model, ki bi računal pričakovano število osvojenih točk ekipe na naslednji tekmi. Pripravil sem novo tabelo, v katero sem za vsako ekipo vnesel vsako tekmo, ki jo je odigrala v treh sezonah. Končno tabelo sem poimenoval `po_kolih_forma` s stolpci:
 
@@ -138,11 +141,11 @@ Z metodami strojnega učenja sem želel sestaviti napovedni model, ki bi računa
 -   `Lestvica_nasprotnik` - položaj na lestvici nasprotnika
 -   `Osvojene_točke` - število točk osvojenih na tekmi
 
-Tabeli sem nato preimenoval stolpce v pojasnjevalne spremenljivke `xi` in odvisno spremenljivko `yn` ter dodal stolpec `yd` za razvščevalni model in odstranil stolpec `Ekipa`, tako, da so ostali le še stolpci številskih spremenljivk. Preizkusil sem 5 modelov tri z algoritmom naključnih gozdovov in dva z linearno regresijo. Napovedno napako modelov pa sem ocenil po metodi prečnega preverjanja.
+Tabeli sem nato preimenoval stolpce v pojasnjevalne spremenljivke `xi` in odvisno spremenljivko `yn` ter dodal stolpec `yd` za razvrščevalni model in odstranil stolpec `Ekipa`, tako da so ostali le še stolpci numeričnih spremenljivk. Preizkusil sem 5 linearnih modelov tri z algoritmom **naključnih gozdovov** in dva z **linearno regresijo**, v katere sem vključil različno število pojasnjevalnih spremenljivk. Napovedno napako modelov pa sem ocenil po metodi prečnega preverjanja.
 
-Izkazalo se je, da je pri napovedovanju pričakovanega števila točk prišlo do zelo velike napake, ne glede na izbiro modela. Razlog v tem je, da so vrednosti `yn` lahko le `0,1,3` tako je pri napačni napovedi bila napaka vedno velikosti vsaj `1`.
+Izkazalo se je, da je pri napovedovanju pričakovanega števila točk prišlo do zelo velike napake, ne glede na izbiro modela. Razlog v tem je, da so vrednosti `yn` lahko le $0, 1$ ali $3$ tako je pri napačni napovedi bila napaka vedno velikosti vsaj $1$.
 
-Tako sem se odločil narediti še razvrščevalni model, ki bi napovedoval ali bo ekipa na tekmi zmagala ali ne. Če je bilo število osvojenih točk na tekmi enako 3, je bila vrednost `yd = 1`, sicer je bila `-1`. Vzel sem enakih 5 modelov in jih spet  razdelil na tri z algoritmom naključnih gozdov in dva z logistično regresijo. Na spodnjem grafu so prikazane napovedne napake modelov.
+Tako sem se odločil narediti še razvrščevalni model, ki bi napovedoval ali bo ekipa na tekmi zmagala ali ne. Če je bilo število osvojenih točk na tekmi enako $3$ , je bila vrednost `yd` enaka $1$, sicer je bila $-1$. Vzel sem enakih 5 modelov in jih spet  razdelil na tri z algoritmom **naključnih gozdov** in dva z **logistično regresijo**. Na spodnjem grafu so prikazane napovedne napake modelov.
 
 ```{r graf_napak, echo=FALSE, fig.align='center'}
 graf_napak
@@ -152,6 +155,8 @@ Kot najboljši se je izkazal model z algoritmom logistične regresije `yd ~ x1 +
 
 
 ***
+
+### Shiny
 
 ```{r shiny}
 shinyAppDir("shiny", options=list(width="100%", height=600))
