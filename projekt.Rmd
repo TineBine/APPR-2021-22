@@ -162,3 +162,8 @@ Kot najboljši se je izkazal model z algoritmom logistične regresije `yd ~ x1 +
 shinyAppDir("shiny", options=list(width="100%", height=600))
 ```
 Naredil sem tudi aplikacijo Shiny, ki prikazuje korelacije med različnimi spremenljivkami za ekipe iz Premier lige.
+
+
+
+## Zaključek
+V nogometu velja načelo, da so navijači dvanajsti igralec ekipe. To smo tudi potrdili v analizi, kjer smo primerjali uspeh domačih ekip, ko se je igralo brez navijačev. Kljub posebnim okoliščinam igranja pa so najboljše ekipe tudi v korona sezoni ostale pri vrhu. Pandemija je različno vplivala na posamezne lige, najmanj sprememb je bilo opaziti v nemški in italijanski ligi, kar kaže na to, da so se tamkajšnje ekipe najbolje prilagodile posebnim razmeram. Pokazali smo tudi v katerih ligah obstaja največji kontrast med ekipami glede na položaj na lestvici in v katerih je največja konkurenca pri vrhu lestvice. Pri napovedovanju razpleta tekem nismo bili najbolj uspešni, kar kaže na nepredvidljivost nogometa in nešteto faktorjev, ki vplivajo na rezultat.
